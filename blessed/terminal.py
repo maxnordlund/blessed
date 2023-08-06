@@ -1373,7 +1373,7 @@ class Terminal(object):
 
         In cbreak mode, special input characters such as ``^C`` or ``^S`` are
         interpreted by the terminal driver and excluded from the stdin stream.
-        In raw mode these values are receive by the :meth:`inkey` method.
+        In raw mode these values are received by the :meth:`inkey` method.
 
         Because output processing is not done, the newline ``'\n'`` is not
         enough, you must also print carriage return to ensure that the cursor
