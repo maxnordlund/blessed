@@ -1367,7 +1367,7 @@ class Terminal(object):
         r"""
         A context manager for :func:`tty.setraw`.
 
-        Although both :meth:`break` and :meth:`raw` modes allow each keystroke
+        Although both :meth:`cbreak` and :meth:`raw` modes allow each keystroke
         to be read immediately after it is pressed, Raw mode disables
         processing of input and output.
 
