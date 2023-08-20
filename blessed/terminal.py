@@ -1367,13 +1367,13 @@ class Terminal(object):
         r"""
         A context manager for :func:`tty.setraw`.
 
-        Although both :meth:`break` and :meth:`raw` modes allow each keystroke
+        Although both :meth:`cbreak` and :meth:`raw` modes allow each keystroke
         to be read immediately after it is pressed, Raw mode disables
         processing of input and output.
 
         In cbreak mode, special input characters such as ``^C`` or ``^S`` are
         interpreted by the terminal driver and excluded from the stdin stream.
-        In raw mode these values are receive by the :meth:`inkey` method.
+        In raw mode these values are received by the :meth:`inkey` method.
 
         Because output processing is not done, the newline ``'\n'`` is not
         enough, you must also print carriage return to ensure that the cursor
