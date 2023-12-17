@@ -18,7 +18,8 @@ import collections
 
 # local
 from .color import COLOR_DISTANCE_ALGORITHMS
-from .keyboard import (_time_left,
+from .keyboard import (DEFAULT_ESCDELAY,
+                       _time_left,
                        _read_until,
                        resolve_sequence,
                        get_keyboard_codes,
@@ -1425,8 +1426,8 @@ class Terminal(object):
             self.stream.write(self.rmkx)
             self.stream.flush()
 
-    def inkey(self, timeout=None, esc_delay=0.35):
-        """
+    def inkey(self, timeout=None, esc_delay=DEFAULT_ESCDELAY):
+        r"""
         Read and return the next keyboard event within given timeout.
 
         Generally, this should be used inside the :meth:`raw` context manager.
@@ -1434,12 +1435,16 @@ class Terminal(object):
         :arg float timeout: Number of seconds to wait for a keystroke before
             returning.  When ``None`` (default), this method may block
             indefinitely.
-        :arg float esc_delay: To distinguish between the keystroke of
-           ``KEY_ESCAPE``, and sequences beginning with escape, the parameter
-           ``esc_delay`` specifies the amount of time after receiving escape
-           (``chr(27)``) to seek for the completion of an application key
-           before returning a :class:`~.Keystroke` instance for
-           ``KEY_ESCAPE``.
+        :arg float esc_delay: Time in seconds to block after Escape key
+           is received to await another key sequence beginning with
+           escape such as *KEY_LEFT*, sequence ``'\x1b[D'``], before returning a
+           :class:`~.Keystroke` instance for ``KEY_ESCAPE``.
+
+           Users may override the default value of ``esc_delay`` in seconds,
+           using environment value of ``ESCDELAY`` as milliseconds, see
+           `ncurses(3)`_ section labeled *ESCDELAY* for details.  Setting
+           the value as an argument to this function will override any
+           such preference.
         :rtype: :class:`~.Keystroke`.
         :returns: :class:`~.Keystroke`, which may be empty (``u''``) if
            ``timeout`` is specified and keystroke is not received.
@@ -1454,11 +1459,12 @@ class Terminal(object):
             <https://docs.microsoft.com/en-us/windows/win32/api/timeapi/nf-timeapi-timebeginperiod>`_.
             Decreasing the time resolution will reduce this to 10 ms, while increasing it, which
             is rarely done, will have a perceptable impact on the behavior.
+
+        _`ncurses(3)`: https://www.man7.org/linux/man-pages/man3/ncurses.3x.html
         """
         resolve = functools.partial(resolve_sequence,
                                     mapper=self._keymap,
                                     codes=self._keycodes)
-
         stime = time.time()
 
         # re-buffer previously received keystrokes,
