@@ -1,10 +1,15 @@
-# std imports
-from typing import Set, Dict, Type, Mapping, TypeVar, Iterable, Optional, OrderedDict
+"""Type hints for 'keyboard awareness'"""
 
-# local
-from .terminal import Terminal
+# std imports
+from typing import TYPE_CHECKING, Set, Dict, Type, Mapping, TypeVar, Iterable, Optional, OrderedDict
+
+if TYPE_CHECKING:
+    # local
+    from .terminal import Terminal
 
 _T = TypeVar("_T")
+
+# pylint: disable=unused-argument,missing-function-docstring,missing-class-docstring
 
 class Keystroke(str):
     def __new__(
@@ -21,7 +26,7 @@ class Keystroke(str):
     def code(self) -> Optional[int]: ...
 
 def get_keyboard_codes() -> Dict[int, str]: ...
-def get_keyboard_sequences(term: Terminal) -> OrderedDict[str, int]: ...
+def get_keyboard_sequences(term: 'Terminal') -> OrderedDict[str, int]: ...
 def get_leading_prefixes(sequences: Iterable[str]) -> Set[str]: ...
 def resolve_sequence(
     text: str, mapper: Mapping[str, int], codes: Mapping[int, str]
