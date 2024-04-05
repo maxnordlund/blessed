@@ -12,7 +12,6 @@ import select
 import struct
 import platform
 import warnings
-import functools
 import contextlib
 import collections
 
@@ -529,7 +528,7 @@ class Terminal(object):
             self.stream.flush()
 
             # Wait for response
-            match, data = _read_until(term=self,
+            match, data = _read_until(term=self,  # pylint: disable=unpacking-non-sequence
                                       pattern=response_re,
                                       timeout=timeout)
 
@@ -1463,9 +1462,6 @@ class Terminal(object):
 
         _`ncurses(3)`: https://www.man7.org/linux/man-pages/man3/ncurses.3x.html
         """
-        resolve = functools.partial(resolve_sequence,
-                                    mapper=self._keymap,
-                                    codes=self._keycodes)
         stime = time.time()
 
         # re-buffer previously received keystrokes,
@@ -1478,14 +1474,14 @@ class Terminal(object):
             ucs += self.getch()
 
         # decode keystroke, if any
-        ks = resolve(text=ucs)
+        ks = resolve_sequence(ucs, self._keymap, self._keycodes)
 
         # so long as the most immediately received or buffered keystroke is
         # incomplete, (which may be a multibyte encoding), block until until
         # one is received.
         while not ks and self.kbhit(timeout=_time_left(stime, timeout)):
             ucs += self.getch()
-            ks = resolve(text=ucs)
+            ks = resolve_sequence(ucs, self._keymap, self._keycodes)
 
         # handle escape key (KEY_ESCAPE) vs. escape sequence (like those
         # that begin with \x1b[ or \x1bO) up to esc_delay when
@@ -1500,10 +1496,10 @@ class Terminal(object):
         if ks.code == self.KEY_ESCAPE:
             esctime = time.time()
             while (ks.code == self.KEY_ESCAPE and
-                   ucs in self._keymap_prefixes and
+                   ucs in self._keymap_prefixes and  # pylint: disable=unsupported-membership-test
                    self.kbhit(timeout=_time_left(esctime, esc_delay))):
                 ucs += self.getch()
-                ks = resolve(text=ucs)
+                ks = resolve_sequence(ucs, self._keymap, self._keycodes)
 
         # buffer any remaining text received
         self.ungetch(ucs[len(ks):])
