@@ -167,6 +167,7 @@ def test_emojis_width_2_and_greater():
 
     child()
 
+
 def test_greedy_join_with_cojoining():
     """Test that a word with trailing combining (café) wraps correctly."""
     @as_subprocess
