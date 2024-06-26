@@ -229,7 +229,7 @@ class SequenceTextWrapper(textwrap.TextWrapper):
                 nxt += len(text)
                 seq_length = Sequence(chunk[:nxt], term).length()
                 if seq_length > space_left:
-                    if cur_len == 0 and width == 1 and nxt == 1:
+                    if cur_len == 0 and width == 1 and nxt == 1 and seq_length == 2:
                         # Emoji etc. cannot be split under 2 cells, so in the
                         # case of a width of 1, we have no choice but to allow
                         # those characters to flow outside of the given cell.
