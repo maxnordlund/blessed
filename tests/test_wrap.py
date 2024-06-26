@@ -113,3 +113,19 @@ def test_multiline():
         assert expected == result
 
     child()
+
+def test_east_asian_emojis_width_1():
+    """Tests edge-case of east-asian and emoji characters split into single columns."""
+    @as_subprocess
+    def child():
+        term = TestTerminal()
+        # by @grayjk from https://github.com/jquast/blessed/issues/273
+        result = term.wrap('\u5973', 1)
+        assert result == ['\u5973']
+
+        # much like test_length_with_zwj_is_wrong(), blessed gets ZWJ wrong when wrapping, also.
+        # RGI_Emoji_ZWJ_Sequence  ; family: woman, woman, girl, boy
+        result = term.wrap(u'\U0001F469\u200D\U0001F469\u200D\U0001F467\u200D\U0001F466', 1)
+        assert result == ['\U0001F469\u200D', '\U0001F469\u200D', '\U0001F467\u200D', '\U0001F466']
+
+    child()
