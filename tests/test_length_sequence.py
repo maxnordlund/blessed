@@ -52,7 +52,6 @@ def test_length_with_zwj_is_wrong():
         assert term.length(given) == expected
 
 
-
 def test_length_ansiart():
     """Test length of ANSI art"""
     @as_subprocess

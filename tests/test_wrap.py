@@ -114,6 +114,7 @@ def test_multiline():
 
     child()
 
+
 def test_east_asian_emojis_width_1():
     """Tests edge-case of east-asian and emoji characters split into single columns."""
     @as_subprocess
@@ -130,5 +131,37 @@ def test_east_asian_emojis_width_1():
         given = u'\U0001F469\u200D\U0001F469\u200D\U0001F467\u200D\U0001F466'
         result = term.wrap(given, 1)
         assert result == list(given)
+
+        # in another example, two *narrow* characters, \u1100, "ᄀ" HANGUL
+        # CHOSEONG KIYEOK (consonant) is joined with \u1161, "ᅡ" HANGUL
+        # JUNGSEONG A (vowel), to form a single *wide* character "가" HANGUL
+        # SYLLABLE GA. Ideally, a native speaker would rather have the cojoined
+        # wide character, and word-wrapping to a column width of '1' for any
+        # language that includes wide characters or emoji is a bit foolish!
+        given = u'\u1100\u1161'
+        result = term.wrap(given, 1)
+        assert result == list(given)
+
+    child()
+
+
+def test_emojis_width_2_and_greater():
+    """Tests emoji characters split into multiple columns."""
+    @as_subprocess
+    def child():
+        term = TestTerminal()
+        given = u'\U0001F469\U0001F467\U0001F466'  # woman, girl, boy
+        result = term.wrap(given, 2)
+        assert result == list(given)
+        result = term.wrap(given, 3)
+        assert result == list(given)
+        result = term.wrap(given, 4)
+        assert result == [u'\U0001F469\U0001F467', '\U0001F466']
+        result = term.wrap(given, 5)
+        assert result == [u'\U0001F469\U0001F467', '\U0001F466']
+        result = term.wrap(given, 6)
+        assert result == [u'\U0001F469\U0001F467\U0001F466']
+        result = term.wrap(given, 7)
+        assert result == [u'\U0001F469\U0001F467\U0001F466']
 
     child()
