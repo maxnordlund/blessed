@@ -6,6 +6,7 @@ Version History
   * bugfix infinite loop in :meth:`~Terminal.wrap` when "Wide" characters of
     width 2 (East-Asian or Emoji) are used with a wrap width of 1, and a small
     performance enhancement, :ghissue:`273` and :ghpull:`274` by :ghuser:`grayjk`
+    merged as :ghpull:`275`.
 
 1.20
   * introduced :meth:`~Terminal.get_fgcolor` and :meth:`~Terminal.get_bgcolor` to query
