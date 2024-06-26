@@ -1,4 +1,5 @@
 """Tests for Terminal.wrap()"""
+# coding: utf-8
 
 # std imports
 import textwrap
@@ -156,9 +157,9 @@ def test_emojis_width_2_and_greater():
         result = term.wrap(given, 3)
         assert result == list(given)
         result = term.wrap(given, 4)
-        assert result == [u'\U0001F469\U0001F467', '\U0001F466']
+        assert result == [u'\U0001F469\U0001F467', u'\U0001F466']
         result = term.wrap(given, 5)
-        assert result == [u'\U0001F469\U0001F467', '\U0001F466']
+        assert result == [u'\U0001F469\U0001F467', u'\U0001F466']
         result = term.wrap(given, 6)
         assert result == [u'\U0001F469\U0001F467\U0001F466']
         result = term.wrap(given, 7)
