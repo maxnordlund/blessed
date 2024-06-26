@@ -166,3 +166,20 @@ def test_emojis_width_2_and_greater():
         assert result == [u'\U0001F469\U0001F467\U0001F466']
 
     child()
+
+def test_greedy_join_with_cojoining():
+    """Test that a word with trailing combining (café) wraps correctly."""
+    @as_subprocess
+    def child():
+        term = TestTerminal()
+        given = u'cafe\u0301-latte'
+        result = term.wrap(given, 5)
+        assert result == [u'cafe\u0301-', u'latte']
+        result = term.wrap(given, 4)
+        assert result == [u'cafe\u0301', u'-lat', u'te']
+        result = term.wrap(given, 3)
+        assert result == [u'caf', u'e\u0301-l', u'att', u'e']
+        result = term.wrap(given, 2)
+        assert result == [u'ca', u'fe\u0301', u'-l', u'at', u'te']
+
+    child()
